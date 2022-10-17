@@ -1,0 +1,101 @@
+# JDBC 逻辑库名称
+databaseName: cc
+# 数据源配置
+dataSources:
+# 分片库配置
+# 如果使用数据源模式的话 dataSourceClassName: # 数据源完整类名 | driverClassName: # 数据库驱动类名，以数据库连接池自身配置为准 | jdbcUrl:
+  ds_0:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://172.16.18.31:3307/cc_0001
+    username: root
+    password: Zdaas@2022
+  ds_1:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://172.16.18.31:3307/cc_0002
+    username: root
+    password: Zdaas@2022
+  ds_2:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://172.16.18.31:3307/cc_0003
+    username: root
+    password: Zdaas@2022
+  ds_3:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://172.16.18.31:3307/cc_0004
+    username: root
+    password: Zdaas@2022    
+# 数据分片规则配置      
+rules:
+- !SHARDING
+  tables:
+    # 逻辑表名
+    cust:
+        actualDataNodes: ds_${0..3}.cust${0..31}
+        # 分库策略
+        databaseStrategy : 
+          standard: 
+            shardingColumn: ROUTING_ID
+            shardingAlgorithmName: HASH
+        # 分表策略    
+        tableStrategy: 
+          standard:
+            shardingColumn: CUST_ID
+            shardingAlgorithmName: cust_LONG_HASH
+    prod_his:
+        actualDataNodes: ds_${0..3}.prod_his${0..31}
+        databaseStrategy : 
+          standard: 
+            shardingColumn: ROUTING_ID
+            shardingAlgorithmName: HASH   
+        tableStrategy: 
+          standard:
+            shardingColumn: CUST_ID
+            shardingAlgorithmName: prod_his_LONG_HASH   
+    prod:
+        actualDataNodes: ds_${0..3}.prod${0..31}
+        databaseStrategy : 
+          standard: 
+            shardingColumn: ROUTING_ID
+            shardingAlgorithmName: HASH
+        tableStrategy: 
+          standard:
+            shardingColumn: CUST_ID
+            shardingAlgorithmName: prod_LONG_HASH      
+    subs:
+        actualDataNodes: ds_${0..3}.subs${0..31}
+        databaseStrategy : 
+          standard: 
+            shardingColumn: ROUTING_ID
+            shardingAlgorithmName: HASH
+        tableStrategy: 
+          standard:
+            shardingColumn: CUST_ID
+            shardingAlgorithmName: subs_LONG_HASH  
+
+  # 分片算法配置  这里这个方法有些笨重
+  shardingAlgorithms:
+    HASH:
+      type: INLINE
+      props:
+        algorithm-expression: ds_${ROUTING_ID % 12}
+    cust_LONG_HASH:
+      type: INLINE
+      props:
+        algorithm-expression: cust${Long.valueOf(CUST_ID) % 32}
+    prod_his_LONG_HASH:
+      type: INLINE
+      props:
+        algorithm-expression: prod_his${Long.valueOf(CUST_ID) % 32}
+    prod_LONG_HASH:
+      type: INLINE
+      props:
+        algorithm-expression: prod${Long.valueOf(CUST_ID) % 32}
+    subs_LONG_HASH:
+      type: INLINE
+      props:
+        algorithm-expression: subs${Long.valueOf(CUST_ID) % 32}            
+

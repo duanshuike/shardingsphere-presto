@@ -1,23 +1,54 @@
-# Compiled class file
+# maven ignore
+target/
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
-*.nar
-*.ear
 *.zip
+*.tar
 *.tar.gz
-*.rar
+dependency-reduced-pom.xml
+.flattened-pom.xml
+pom.xml.versionsBackup
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# maven plugin ignore
+release.properties
+cobertura.ser
+*.gpg
+
+# eclipse ignore
+.settings/
+.project
+.classpath
+.factorypath
+
+# idea ignore
+.idea/
+!/.idea/icon.png
+*.ipr
+*.iml
+*.iws
+
+# vscode ignore
+.vscode/
+
+# temp ignore
+logs/
+*.log
+*.tlog
+*.doc
+*.cache
+*.diff
+*.patch
+*.tmp
+.hugo_build.lock
+
+# system ignore
+.DS_Store
+Thumbs.db
+
+# antlr ignore
+gen/
+*.tokens
+
+# agent build ignore
+/agent/

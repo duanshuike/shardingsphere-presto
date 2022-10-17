@@ -1,0 +1,54 @@
+databaseName: crm
+# 数据源配置
+dataSources:
+  ds_0:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://172.16.18.31:3307/crm_0001?useSSL=false
+    username: root
+    password: Zdaas@2022
+  ds_1:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://172.16.18.31:3307/crm_0002?useSSL=false
+    username: root
+    password: Zdaas@2022  
+  ds_2:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://172.16.18.31:3307/crm_0003?useSSL=false
+    username: root
+    password: Zdaas@2022
+  ds_3:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://172.16.18.31:3307/crm_0004?useSSL=false
+    username: root
+    password: Zdaas@2022
+# 数据分片规则配置      
+rules:
+- !SHARDING
+  tables:
+    order_item:
+        actualDataNodes: ds_${0..3}.order_item${0..11}
+        databaseStrategy : 
+          standard: 
+            shardingColumn: ROUTING_ID
+            shardingAlgorithmName: HASH
+        tableStrategy: 
+          standard:
+            shardingColumn: PART_ID
+            shardingAlgorithmName: order_item_HASH      
+  
+  # 分片算法配置  这个有大问题
+  shardingAlgorithms:
+    HASH:
+      type: INLINE
+      props:
+        algorithm-expression: ds_${ROUTING_ID % 12}
+    order_item_HASH:
+      type: INLINE
+      props:
+        algorithm-expression: order_item${PART_ID % 12}
+
+       
